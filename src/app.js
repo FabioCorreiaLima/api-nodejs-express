@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/selecoes', (req, res) => {
+app.get('/selecoes/id', (req, res) => {
     res.status(200).send(selecoes)
 
 })
