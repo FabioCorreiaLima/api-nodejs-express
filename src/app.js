@@ -1,23 +1,28 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express= require('express');
+require('dotenv').config({ path:"src/.env" }); 
 const userRoutes = require('./routes/userRoutes');
+const ConnectMongoDB = require("./DB/database");
+const bodyParser = require('body-parser')
 
+//conectando ao banco de dados
+ConnectMongoDB();
+
+
+const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 
-// Conectar ao MongoDB    qBr7Np9iWWvKsxPU
-mongoose.connect('mongodb+srv://gomu:lima@cluster0.tptdhgs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-  .then(() => {
-    console.log("Conexão com o MongoDB estabelecida com sucesso");
-  })
-  .catch(error => {
-    console.log("Erro ao conectar o MongoDB", error);
-  });
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
+
+// Configurar o middleware para analisar o corpo das solicitações
 app.use(express.json());
-app.use('/users', userRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+// Roteamento de usuários
+app.use('/api/users', userRoutes);
+
+
+module.exports = app;
