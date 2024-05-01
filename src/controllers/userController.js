@@ -13,21 +13,26 @@ exports.getAllUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ mensagem: 'Erro ao buscar usuários.', erro: error.message });
   }
 };
+
 
 exports.createUser = async (req, res) => {
-  const { name, email, age } = req.body;
-  const newUser = new User({ name, email, age });
-
-  try {
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
+    const { username, email, password } = req.body;
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, email, password: hashedPassword });
+        const savedUser = await newUser.save();
+        res.status(201).json(savedUser);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
 
 // userController.js
 
@@ -51,32 +56,41 @@ exports.login = async (req, res) => {
 
 
 exports.updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, age } = req.body;
+    try {
+        const { id } = req.params;
+        const { email, password } = req.body;
+        const updates = {};
+        if (email) updates.email = email;
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.password = hashedPassword;
+        }
 
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { name, email, age },
-      { new: true }
-    );
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
+        // Atualize os dados do usuário incluindo a senha criptografada, se fornecida
+        const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
 
 exports.deleteUser = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await User.findByIdAndDelete(id);
-    res.status(200).json({ message: 'User deleted successfully.' });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
+    try {
+        const { id } = req.params;
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted", deletedUser });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
 
 // Busca um usuário por ID
 exports.getUserById = async (req, res) => {
