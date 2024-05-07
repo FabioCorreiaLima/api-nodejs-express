@@ -1,0 +1,22 @@
+{% extends 'public/base.html' %}
+
+{% block body %}
+
+    <header>
+        <h1>SISTEMA DE CADASTRO</h1>
+    </header>
+    <nav>
+        <ul class="nav-list">
+            <li><a href="{{ url_for('setor') }}">Cadastrar Setor</a></li>
+            <li><a href="{{ url_for('funcionario') }}">Cadastrar Funcionário</a></li>
+            <li><a href="{{ url_for('cargo') }}">Cadastrar Cargo</a></li>
+            
+        </ul>
+    </nav>
+    <div class="content">
+        {% block content %}{% endblock %}
+        
+    </div>
+
+
+{% endblock %}

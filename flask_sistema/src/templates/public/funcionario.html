@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <fieldset>
+        <h2>Cadastrar Funcionário</h2>
+        <form method="POST" action="{{ url_for('funcionario') }}">
+            <input class='form-required' type="text" id="primeiro_nome" name="primeiro_nome" placeholder="Primeiro Nome" required>
+            <input class='form-required' type="text" id="sobrenome" name="sobrenome" placeholder="Sobrenome" required>
+            
+            <select name="status_funcionario" id="status_funcionario" required>
+                <option value="" disabled selected>Selecione um Status</option>
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+            </select>
+            <select name="cargo" id="cargo" required>
+                <option value="" disabled selected> Cargo  |  Setor</option>
+                {% for id, nome, id_setor, nome_setor in cargo %}
+                    <option value="{{ id }}_{{ id_setor }}">{{ nome }} | {{nome_setor}}</option>
+                {% endfor %}
+            </select>
+            <input class='form-required-data' type="date" id="data_admissao" name="data_admissao" placeholder="Data de Admissão" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </fieldset>
+{% endblock %}

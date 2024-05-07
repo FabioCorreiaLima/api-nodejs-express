@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div>
+    <fieldset>
+        <h2>Cadastrar Setor</h2>
+        
+            <form method="POST" action="{{ url_for('setor') }}">
+                    <input class='form-required' type="text" name="nome" id="nome" placeholder="Nome do Setor" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+    </fieldset>
+</div>
+
+{% endblock %}

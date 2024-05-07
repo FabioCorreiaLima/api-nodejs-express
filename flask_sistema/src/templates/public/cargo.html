@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <fieldset>
+        <h2>Cadastrar Cargo</h2>
+        <form method="POST" action="{{ url_for('cargo') }}">
+            <input class='form-required' type="text" name="nome" id="nome" placeholder="Nome do Cargo" required>
+            <label for="setor">Selecione um Setor:</label>
+            <select name="setor" id="setor" required>
+                <option value="" disabled selected>Selecione uma opção</option>
+                {% for id, nome in setor %}
+                    <option value="{{ id }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Cadastrar</button>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </form>
+    </fieldset>
+    
+{% endblock %}
